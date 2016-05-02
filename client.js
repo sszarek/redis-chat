@@ -5,53 +5,53 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-const redis = new Redis({
+const subscribeConnection = new Redis({
+    host: '127.0.0.1',
+    port: 6379
+});
+
+const publishConnection = new Redis({
     host: '127.0.0.1',
     port: 6379
 });
 
 const CommandRgxp = /^\/(\w+) (\w+)$/g;
 
-redis.on('ready', function () {
-    rl.write('redis connected\n');
+let currentRoom = '';
+
+subscribeConnection.on('ready', function () {
+    rl.write('Subscribe connection established\n');
 });
 
-redis.on('error', function (e) {
-    rl.write('redis error\n', e);
+subscribeConnection.on('error', function (e) {
+    rl.write(e);
+});
+
+publishConnection.on('ready', function () {
+    rl.write('Publish connection established\n');
+});
+
+publishConnection.on('error', function (e) {
+    rl.write(e);
 });
 
 rl.on('line', function (line) {
     let result = CommandRgxp.exec(line);
     if (result) {
-        let command = result[1];
         let room = result[2];
-
+        currentRoom = room;
         joinRoom(room);
+    } else {
+        sendMessage(line);
     }
 });
 
 function joinRoom(room) {
-    redis.rawCall(['SUBSCRIBE', room], function (e, data) {
+    subscribeConnection.rawCall(['SUBSCRIBE', room], function (e, data) {
         console.log(data);
-        // if (data) {
-        //     rl.write(data);
-        // }
-
-        //rl.write(data);
     });
 }
 
-// ld.prompt()
-
-// var r2 = new Redis({
-//     host: '127.0.0.1',
-//     port: 6379
-// });
-
-// setInterval(function () {
-//     r2.rawCall(['PUBLISH', 'foo', 'bar']);
-// }, 1000);
-
-// setInterval(function () {
-//     r2.rawCall(['PUBLISH', 'foo2', 'bar2']);
-// }, 3000);
+function sendMessage(message) {
+    publishConnection.rawCall(['PUBLISH', currentRoom, message]);
+}
