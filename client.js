@@ -1,22 +1,5 @@
 'use strict';
 
-// const readline = require('readline');
-// const Redis = require('redis-fast-driver');
-// const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout
-// });
-
-// const subscribeConnection = new Redis({
-//     host: '127.0.0.1',
-//     port: 6379
-// });
-
-// const publishConnection = new Redis({
-//     host: '127.0.0.1',
-//     port: 6379
-// });
-
 const readline = require('readline');
 const ChatClient = require('./lib/chatClient');
 const CommandRgxp = /^\/(\w+) (\w+)$/g;
