@@ -12,6 +12,7 @@ const rl = readline.createInterface({
 const client = new ChatClient('127.0.0.1', 6379);
 client.connect();
 
+client.on('error', error => console.error(error));
 client.on('message', message => console.log(message));
 
 rl.on('line', function (line) {
