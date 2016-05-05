@@ -18,6 +18,12 @@ client.connect();
 
 commander.registerCommand(new JoinRoomCommand(client));
 commander.registerCommand(new LeaveRoomCommand(client));
+commander.registerCommand({
+    name: 'exit',
+    execute: function executeExit() {     
+        process.exit(0);  
+    }
+});
 
 client.on('error', error => console.error(error));
 client.on('message', message => console.log(message));
