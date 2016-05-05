@@ -4,7 +4,8 @@ const readline = require('readline');
 const ChatClient = require('./lib/chatClient');
 const Commander = require('./lib/commands/commander');
 const JoinRoomCommand = require('./lib/commands/joinRoomCommand');
-const CommandRgxp = /^\/(\w+) (\w+)$/g;
+const LeaveRoomCommand = require('./lib/commands/leaveRoomCommand');
+const CommandRgxp = /^\/(\w+)\s*(\w*)$/;
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -16,6 +17,7 @@ const client = new ChatClient('127.0.0.1', 6379);
 client.connect();
 
 commander.registerCommand(new JoinRoomCommand(client));
+commander.registerCommand(new LeaveRoomCommand(client));
 
 client.on('error', error => console.error(error));
 client.on('message', message => console.log(message));
