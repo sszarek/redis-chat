@@ -2,6 +2,8 @@
 
 const readline = require('readline');
 const ChatClient = require('./lib/chatClient');
+const Commander = require('./lib/commands/commander');
+const JoinRoomCommand = require('./lib/commands/joinRoomCommand');
 const CommandRgxp = /^\/(\w+) (\w+)$/g;
 
 const rl = readline.createInterface({
@@ -9,8 +11,11 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
+const commander = new Commander();
 const client = new ChatClient('127.0.0.1', 6379);
 client.connect();
+
+commander.registerCommand(new JoinRoomCommand(client));
 
 client.on('error', error => console.error(error));
 client.on('message', message => console.log(message));
@@ -18,8 +23,7 @@ client.on('message', message => console.log(message));
 rl.on('line', function (line) {
     let result = CommandRgxp.exec(line);
     if (result) {
-        let room = result[2];
-        client.joinRoom(room);
+        commander.executeCommand(...result.slice(1));
     } else {
         client.sendMessage(line);
     }
