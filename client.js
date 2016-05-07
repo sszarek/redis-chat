@@ -14,9 +14,16 @@ const commander = new Commander();
 const client = new ChatClient('127.0.0.1', 6379);
 client.connect();
 
+commander.registerCommand('help', () => {
+    console.log('Available commands:');
+    for(var command of commander.commands) {
+        console.log(`/${command}`);
+    }
+});
 commander.registerCommand('join', arg => client.joinRoom(arg));
 commander.registerCommand('leave', () => client.leaveRoom());
 commander.registerCommand('exit', () => process.exit(0));
+commander.executeCommand('help');
 
 client.on('error', error => console.error(error));
 client.on('message', message => console.log(message));
