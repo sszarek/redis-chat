@@ -15,13 +15,14 @@ commander.registerCommand('help', () => {
         Console.writeLine(`/${command}`);
     }
 });
+commander.registerCommand('set_name', name => client.setUserName(name));
 commander.registerCommand('join', arg => client.joinRoom(arg));
 commander.registerCommand('leave', () => client.leaveRoom());
 commander.registerCommand('exit', () => process.exit(0));
 commander.executeCommand('help');
 
 client.on('error', error => Console.writeLine(error));
-client.on('message', message => Console.writeLine(message));
+client.on('message', message => Console.writeLine(`${message.user}: ${message.message}`));
 
 Console.on('line', function (line) {
     let result = CommandRgxp.exec(line);

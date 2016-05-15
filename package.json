@@ -5,6 +5,7 @@
   "main": "index.js",
   "bin": "",
   "scripts": {
+    "start": "node client.js",
     "test": "mocha"
   },
   "dependencies": {
